@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Sync</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app" class="hidden">
+        <div class="weather-sync-main">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-left">
+                    <div class="logo">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                        </svg>
+                    </div>
+                    <div class="title-section">
+                        <h1>Weather Sync</h1>
+                        <p>v1.0.0</p>
+                    </div>
+                </div>
+                <button class="close-btn" onclick="closeUI()">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M18 6L6 18M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="main-content">
+                <!-- Sidebar -->
+                <div class="sidebar">
+                    <button class="nav-btn active" data-tab="home" onclick="switchTab('home')">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                        </svg>
+                    </button>
+                    <button class="nav-btn" data-tab="weather" onclick="switchTab('weather')">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                        </svg>
+                    </button>
+                    <button class="nav-btn" data-tab="zones" onclick="switchTab('zones')">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                            <circle cx="12" cy="10" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Content Area -->
+                <div class="content">
+                    <!-- Home Tab -->
+                    <div id="home-tab" class="tab-content active">
+                        <div class="section">
+                            <div class="section-header">
+                                <h2>Server Information</h2>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M12 16v-4M12 8h.01"/>
+                                </svg>
+                            </div>
+                            <div class="info-card">
+                                <div class="stats-grid">
+                                    <div class="stat">
+                                        <p class="stat-label">Sync Status:</p>
+                                        <p class="stat-value" id="sync-status">Active</p>
+                                    </div>
+                                    <div class="stat">
+                                        <p class="stat-label">Uptime:</p>
+                                        <p class="stat-value">48h</p>
+                                    </div>
+                                    <div class="stat">
+                                        <p class="stat-label">Next Change:</p>
+                                        <p class="stat-value" id="next-change">15m</p>
+                                    </div>
+                                </div>
+                                <div class="button-row">
+                                    <button class="btn btn-success" id="sync-toggle" onclick="toggleSync()">Sync Enabled</button>
+                                    <button class="btn btn-warning" onclick="forceUpdate()">Force Update</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <div class="section-header">
+                                <h2>Current Weather</h2>
+                                <svg class="icon current-weather-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                                </svg>
+                            </div>
+                            <div class="weather-card">
+                                <div class="weather-info">
+                                    <div class="weather-item">
+                                        <div class="weather-icon">
+                                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="weather-label">Weather:</p>
+                                            <p class="weather-value" id="current-weather">CLEAR</p>
+                                        </div>
+                                    </div>
+                                    <div class="weather-item">
+                                        <div class="weather-icon">
+                                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                                <circle cx="12" cy="12" r="10"/>
+                                                <polyline points="12,6 12,12 16,14"/>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <p class="weather-label">Time:</p>
+                                            <p class="weather-value" id="current-time">12:30</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="weather-controls">
+                                    <button class="btn btn-small" onclick="setTime('day')">Day</button>
+                                    <button class="btn btn-small" onclick="setTime('night')">Night</button>
+                                    <button class="btn btn-small" onclick="setTime('noon')">Noon</button>
+                                    <button class="btn btn-small" onclick="setTime('midnight')">Midnight</button>
+                                </div>
+                                <div class="weather-controls" style="margin-top: 0.5rem;">
+                                    <input type="number" id="time-hour" class="time-input" placeholder="Hour (0-23)" min="0" max="23" value="12">
+                                    <input type="number" id="time-minute" class="time-input" placeholder="Min (0-59)" min="0" max="59" value="0">
+                                    <button class="btn btn-small btn-primary" onclick="setCustomTime()">Set Time</button>
+                                    <button class="btn btn-small btn-warning" onclick="toggleFreezeTime()" id="freeze-time-btn">Freeze</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h2>Weather Impact & Server Stats</h2>
+                            <div class="impact-grid">
+                                <div class="impact-card">
+                                    <div class="impact-header">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M14 4v10.54a4 4 0 1 1-4 0V4a2 2 0 0 1 4 0Z"/>
+                                        </svg>
+                                        <p>Road Condition</p>
+                                    </div>
+                                    <p class="impact-value">Wet</p>
+                                </div>
+                                <div class="impact-card">
+                                    <div class="impact-header">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/>
+                                        </svg>
+                                        <p>Visibility</p>
+                                    </div>
+                                    <p class="impact-value">85%</p>
+                                </div>
+                                <div class="impact-card">
+                                    <div class="impact-header">
+                                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                            <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                                        </svg>
+                                        <p>Wind Speed</p>
+                                    </div>
+                                    <p class="impact-value">12 m/s</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Weather Tab -->
+                    <div id="weather-tab" class="tab-content">
+                        <div class="section">
+                            <div class="section-header">
+                                <h2>Select Weather</h2>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                                </svg>
+                            </div>
+                            <div class="weather-grid" id="weather-grid">
+                                <!-- Weather buttons will be populated by JavaScript -->
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h2>Weather Presets</h2>
+                            <div class="preset-grid">
+                                <button class="btn btn-preset" onclick="setWeatherPreset('THUNDER')">Chase Scene</button>
+                                <button class="btn btn-preset" onclick="setWeatherPreset('FOGGY')">Night Ops</button>
+                                <button class="btn btn-preset" onclick="setWeatherPreset('THUNDER')">Dramatic Storm</button>
+                                <button class="btn btn-preset" id="auto-sync-btn" onclick="toggleSync()">Auto Sync</button>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h2>Weather Transition</h2>
+                            <div class="preset-grid">
+                                <button class="btn btn-preset" id="transition-instant-btn" onclick="setTransitionMode('instant')">Instant Change</button>
+                                <button class="btn btn-preset btn-primary" id="transition-smooth-btn" onclick="setTransitionMode('smooth')">Smooth Transition</button>
+                            </div>
+                            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.5rem;">Choose how weather changes apply</p>
+                        </div>
+                    </div>
+
+                    <!-- Zones Tab -->
+                    <div id="zones-tab" class="tab-content">
+                        <div class="section">
+                            <div class="section-header">
+                                <div>
+                                    <h2>Weather Zones</h2>
+                                    <p class="section-subtitle">Create dynamic weather zones across the map</p>
+                                </div>
+                                <button class="btn btn-primary" onclick="addNewZone()">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M12 5v14M5 12h14"/>
+                                    </svg>
+                                    Add Zone
+                                </button>
+                            </div>
+
+                            <div class="zone-stats">
+                                <div class="zone-stat">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                        <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+                                        <circle cx="12" cy="10" r="3"/>
+                                    </svg>
+                                    <div>
+                                        <p class="zone-stat-label">Active Zones</p>
+                                        <p class="zone-stat-value" id="active-zones">0 / 0</p>
+                                    </div>
+                                </div>
+                                <div class="zone-stat-right">
+                                    <p class="zone-stat-label">Total Coverage</p>
+                                    <p class="zone-stat-value" id="total-coverage">0m</p>
+                                </div>
+                            </div>
+
+                            <div class="zones-list" id="zones-list">
+                                <!-- Zones will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
