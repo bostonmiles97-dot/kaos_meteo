@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
     setInterval(updateCurrentTime, 1000);
 
     // Test mode - uncomment for testing without FiveM
-    // testMode();
+    testMode();
 
     console.log('[WeatherSync] Initialization complete');
 });
