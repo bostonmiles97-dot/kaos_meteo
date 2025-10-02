@@ -2,6 +2,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    border: none;
+    outline: none;
 }
 
 html, body {
@@ -13,6 +15,8 @@ html, body {
     overflow: hidden;
     border: none !important;
     outline: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .hidden {
